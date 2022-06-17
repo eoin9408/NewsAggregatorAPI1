@@ -9,6 +9,7 @@ namespace NewsAggregatorAPI.Models
 
         }
 
-        public DbSet<NewsItem> NewsItems { get; set; } = null!;
+        public DbSet<NewsItem> NewsItems { get; set; }
+        public DbSet<RSSFeed> RSSFeeds { get; set; }
     }
 }

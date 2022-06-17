@@ -9,6 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<NewsItemsService>();
+builder.Services.AddDbContext<NewsContext>(opt => opt.UseInMemoryDatabase("RSSList"));
 builder.Services.AddDbContext<NewsContext>(opt => opt.UseInMemoryDatabase("NewsList"));
 
 builder.Services.AddCors(options => options.AddDefaultPolicy(configuration =>

@@ -1,0 +1,24 @@
+.input-grp{
+    display: flex;
+    flex-direction: column;
+}
+
+.input-grp:last-child {
+    margin-bottom: 15px;
+}
+
+.btn-grp{
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 15px;
+}
+
+.feed-form{
+
+}
+
+.btn-grp .btn{
+    min-width: 33%;
+    border: 1px solid black;
+    border-radius: 50px;
+}

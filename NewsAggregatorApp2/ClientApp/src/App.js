@@ -6,15 +6,11 @@ import { FetchData } from './components/FetchData';
 
 import './custom.css'
 
-export default class App extends Component {
-  static displayName = App.name;
-
-  render () {
-    return (
-      <Layout>
-        <Route exact path='/' component={Home} />
-        <Route path='/fetch-data' component={FetchData} />
-      </Layout>
-    );
-  }
+export const App = () => {
+  return (
+    <Layout>
+    <Route exact path='/' component={Home} />
+    <Route path='/fetch-data' component={FetchData} />
+  </Layout>
+  )
 }

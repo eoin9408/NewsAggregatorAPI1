@@ -1,64 +1,66 @@
-import React, { Component } from 'react';
-
-export class FetchData extends Component {
-  static displayName = FetchData.name;
+import React, { Component, useState, useEffect } from 'react';
 
 
-  constructor(props) {
-    super(props);
-      this.state = { newsitems: [], loading: true };
-  }
+export const FetchData = () => {
+
+    const [newsItems, setNewsItems] = useState([]);
+    const [loading, setLoading] = useState(true);
 
 
-  componentDidMount() {
-      this.populateNewsData();
-  }
+    useEffect(() => {
+        const populateNewsData = async () => {
+            const rssList = await fetch('https://localhost:7177/api/RssFeeds');
+            const rssData = await rssList.json();
+
+            for (const rssfeed of rssData) {
+                var apiRequestURL = 'https://localhost:7177/api/NewsItems/rss/' + rssfeed.id;
+                const response = await fetch(apiRequestURL, { method: "GET" });
+                const data = await response.json();
+                const newsItemArray = [...data, ...newsItems].sort((a, b) => new Date(b.articleDateTime).getTime() - new Date(a.articleDateTime).getTime());
+                setNewsItems(newsItemArray);
+                setLoading(false);
+            }
+        }
+
+        populateNewsData();
+    }, [])
 
 
-  static renderNewsTable(newsitems) {
-      return (
-          <table className='table table-striped' aria-labelledby="tabelLabel">
-              <thead>
-                  <tr>
-                      <th>ID</th>
-                      <th>Headline</th>
-                      <th>Summary</th>
-                      <th>Date</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {newsitems.map(newsitem =>
-                      <tr key={newsitem.id}>
-                          <td>{newsitem.id}</td>
-                          <td>{newsitem.articleTitle}</td>
-                          <td>{newsitem.articleSummary}</td>
-                          <td>{newsitem.articleDateTime}</td>
-                      </tr>
-                  )}
-              </tbody>
-          </table>      
-          );
-  }
+   const  renderNewsTable = () => {
+        return (
+            <table className='table table-striped' aria-labelledby="tabelLabel">
+                <thead>
+                    <tr>
+                        <th>Publisher</th>
+                        <th>Headline</th>
+                        <th>Summary</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {newsItems.map((newsitem, i)  =>
+                        <tr key={newsitem.id}>
+                            <td>{newsitem.articlePublisher}</td>
+                            <td>{newsitem.articleTitle}</td>
+                            <td>{newsitem.articleSummary}</td>
+                            <td>{newsitem.articleDateTime}</td>
+                        </tr>
+                    )}
+                </tbody>
+            </table>
+        );
+    }
 
 
-  render() {
-    let contents = this.state.loading
-      ? <p><em>Loading...</em></p>
-          : FetchData.renderNewsTable(this.state.newsitems);
+    let contents = loading
+        ? <p><em>Loading...</em></p>
+        : renderNewsTable();
 
     return (
-      <div>
-        <h1 id="tabelLabel" >News RSS Feed</h1>
-        <p>This component demonstrates fetching RSS feed data through an API.</p>
-        {contents}
-      </div>
+        <div>
+            <h1 id="tableLabel" >News RSS Feed</h1>
+            <p>This component demonstrates fetching RSS feed data through an API.</p>
+            {contents}
+        </div>
     );
-  }
-
-
-  async populateNewsData() {
-      const response = await fetch('https://localhost:7177/api/NewsItems/rss');
-      const data = await response.json();
-      this.setState({ newsitems: data, loading: false });
-  }
 }
